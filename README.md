@@ -1,49 +1,60 @@
-# PMPP grayscale (CUDA)
+# PMPP
 
-`colorToGrayscaleConversion` from *Programming Massively Parallel Processors*
-(Kirk & Hwu) — Ch. 2 host-side CUDA pattern, Ch. 3 multidimensional grid —
-wired up to real image I/O via [stb](https://github.com/nothings/stb).
+Working through **Programming Massively Parallel Processors: A Hands-on
+Approach** (Hwu, Kirk & El Hajj) — CUDA implementations run on real hardware
+against real data, not synthetic buffers.
 
-Real photo in (JPG/PNG/…), real 8-bit grayscale PNG out, checked against a CPU
-reference on every run.
+Each chapter's code lives in its own folder with its own `Makefile`, so nothing
+depends on anything else. Clone it, `cd` into a folder, `make`.
 
-## Build
+## Contents
 
-```sh
-make                     # defaults: -arch=sm_120, -ccbin g++-15
-make ARCH=sm_86          # override for your GPU
-```
+| Folder | Book chapters | What it does |
+|---|---|---|
+| [`pmpp_grayscale/`](pmpp_grayscale/) | Ch. 2–3 | `colorToGrayscaleConversion` — RGB photo in, 8-bit grayscale PNG out, verified against a CPU reference |
 
-`ARCH` must match your card. `CCBIN` exists because CUDA 13.3 rejects gcc 16.
+Ch. 2 supplies the host-side pattern (`cudaMalloc` → `cudaMemcpy` → launch →
+`cudaFree`); Ch. 3 supplies the 2D grid and the grayscale kernel itself.
 
-## Run
+## Hardware and toolchain
 
-```sh
-./grayscale input.jpg output.png
-```
+Everything here is developed and benchmarked on:
 
-Images are gitignored, so a fresh clone has none — point it at any photo
-on your machine. The sample run below used `cheetah.jpg`, a 4462x2512
-wallpaper kept locally in this folder but deliberately out of the index.
+| | |
+|---|---|
+| GPU | NVIDIA GeForce RTX 5070 Max-Q / Mobile (Blackwell, GB206, 8 GB) |
+| Compute capability | `sm_120` |
+| CUDA | 13.3 |
+| Host compiler | `g++-15` |
+| OS | Arch Linux |
 
-```
-input : cheetah.jpg  4462x2512 (3 channels in file, using 3)
-pixels: 11208544  (32.07 MB RGB in, 10.69 MB gray out)
-launch: grid(279,157) x block(16,16) = 11213568 threads for 11208544 pixels
-kernel: 0.1866 ms  (240.3 GB/s effective, 60.08 Gpixel/s)
-verify: 10746 / 11208544 bytes differ from CPU reference (max diff 1)
-output: output.png written
-```
+## Building on different hardware
 
-## Why the CPU reference differs by 1
-
-The default build lets the compiler contract `0.21f*r + 0.71f*g + 0.07f*b` into
-FMA instructions, which keep more intermediate precision than the CPU's
-separate multiply-then-add. Roughly 0.1% of pixels land on the other side of a
-rounding boundary, always by exactly 1/255.
+Two knobs, both overridable per invocation:
 
 ```sh
-make exact               # -fmad=false -> 0 / 11208544 bytes differ
+make ARCH=sm_86        # match your card's compute capability
+make CCBIN=g++-14      # pick a host compiler your CUDA release accepts
 ```
 
-That build is ~3% slower and bit-identical to the CPU.
+`ARCH` defaults to `sm_120` and must match your GPU. `CCBIN` exists because
+CUDA 13.3 rejects Arch's system gcc 16; if your distro ships a gcc that your
+CUDA supports, you can drop the flag.
+
+## Conventions
+
+- **Images are gitignored.** Inputs and outputs are local test data, so a fresh
+  clone ships no photos — point the programs at any image on your machine.
+- **Every kernel is checked against a CPU reference** on each run, and prints
+  its own timing and effective bandwidth. Results are stated, not assumed.
+- **Third-party code lives in `vendor/`** and is host-side only. Nothing in
+  those files runs on the GPU.
+
+## Note on floating point
+
+The GPU and CPU results are not always bit-identical, and that is expected
+rather than a bug. `nvcc` contracts expressions like `a*x + b*y + c*z` into FMA
+instructions, which carry more intermediate precision than the CPU's separate
+multiply-then-add. In the grayscale conversion this moves ~0.1% of pixels across
+a rounding boundary, always by exactly 1/255. Building with `-fmad=false`
+restores bit-exact agreement at roughly a 3% cost.

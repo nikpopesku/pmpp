@@ -1,8 +1,8 @@
 # build artifacts
+grayscale
 *.o
-*.obj
 
-# images: inputs and outputs are local test data
+# images: inputs and outputs stay out of the repo
 *.png
 *.PNG
 *.jpg
@@ -11,5 +11,3 @@
 *.JPEG
 *.bmp
 *.tga
-*.ppm
-*.pgm
