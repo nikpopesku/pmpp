@@ -1,3 +1,13 @@
+# build artifacts
 grayscale
 *.o
-out_*.png
+
+# images: inputs and outputs stay out of the repo
+*.png
+*.PNG
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+*.bmp
+*.tga
