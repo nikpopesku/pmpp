@@ -22,6 +22,10 @@ make ARCH=sm_86          # override for your GPU
 ./grayscale input.jpg output.png
 ```
 
+Images are gitignored, so a fresh clone has none — point it at any photo
+on your machine. The sample run below used `cheetah.jpg`, a 4462x2512
+wallpaper kept locally in this folder but deliberately out of the index.
+
 ```
 input : cheetah.jpg  4462x2512 (3 channels in file, using 3)
 pixels: 11208544  (32.07 MB RGB in, 10.69 MB gray out)
