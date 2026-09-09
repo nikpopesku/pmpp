@@ -4,14 +4,15 @@ Working through **Programming Massively Parallel Processors: A Hands-on
 Approach** (Hwu, Kirk & El Hajj) — CUDA implementations run on real hardware
 against real data, not synthetic buffers.
 
-Each chapter's code lives in its own folder with its own `Makefile`, so nothing
-depends on anything else. Clone it, `cd` into a folder, `make`.
+Each chapter's code lives in its own folder with its own `Makefile`, so no
+chapter depends on another. Clone it, `cd` into a folder, `make`.
 
 ## Contents
 
 | Folder | Book chapters | What it does |
 |---|---|---|
 | [`pmpp_grayscale/`](pmpp_grayscale/) | Ch. 2–3 | `colorToGrayscaleConversion` — RGB photo in, 8-bit grayscale PNG out, verified against a CPU reference |
+| [`pmpp_blur/`](pmpp_blur/) | Ch. 3 | `blurKernel` — grayscale photo in, box-blurred 8-bit PNG out, verified against a CPU reference |
 
 Ch. 2 supplies the host-side pattern (`cudaMalloc` → `cudaMemcpy` → launch →
 `cudaFree`); Ch. 3 supplies the 2D grid and the grayscale kernel itself.
@@ -47,8 +48,9 @@ CUDA supports, you can drop the flag.
   clone ships no photos — point the programs at any image on your machine.
 - **Every kernel is checked against a CPU reference** on each run, and prints
   its own timing and effective bandwidth. Results are stated, not assumed.
-- **Third-party code lives in `vendor/`** and is host-side only. Nothing in
-  those files runs on the GPU.
+- **Third-party code lives in the top-level `vendor/`**, shared by every
+  chapter folder, and is host-side only. Nothing in those files runs on the
+  GPU.
 
 ## Note on floating point
 

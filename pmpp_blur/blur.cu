@@ -6,9 +6,9 @@
 #include <cstdlib>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "vendor/stb_image.h"
+#include "../vendor/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "vendor/stb_image_write.h"
+#include "../vendor/stb_image_write.h"
 
 #define CHANNELS 1   // book's blur example works on a single-channel image
 

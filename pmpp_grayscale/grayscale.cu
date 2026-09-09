@@ -8,9 +8,9 @@
 #include <cmath>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "vendor/stb_image.h"
+#include "../vendor/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "vendor/stb_image_write.h"
+#include "../vendor/stb_image_write.h"
 
 #define CHANNELS 3   // book uses 3 (RGB); we force stbi to give us 3
 
