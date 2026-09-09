@@ -13,7 +13,9 @@
 #define CHANNELS 1   // book's blur example works on a single-channel image
 
 #ifndef BLUR_SIZE
-#define BLUR_SIZE 1  // averages over a (2*BLUR_SIZE+1)^2 box; 1 -> 3x3
+#define BLUR_SIZE 8  // averages over a (2*BLUR_SIZE+1)^2 box; 8 -> 17x17
+                     // (book's own example uses 1 -> 3x3, but that's too
+                     // subtle to see at a glance on a multi-megapixel photo)
 #endif
 
 #define CUDA_CHECK(call)                                                       \
