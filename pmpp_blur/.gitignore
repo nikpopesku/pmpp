@@ -1,0 +1,13 @@
+# build artifacts
+blur
+*.o
+
+# images: inputs and outputs stay out of the repo
+*.png
+*.PNG
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+*.bmp
+*.tga
